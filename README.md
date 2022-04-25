@@ -1,5 +1,6 @@
 # git-automations
-Integrate changes with branches 'develop' and 'stage' automatically
+
+Automate push to other branches
 
 
 ## Getting started
@@ -11,8 +12,4 @@ Integrate changes with branches 'develop' and 'stage' automatically
 
 Open a new terminal and run from your branch:
 
-    push-develop.sh
-  
-  or
-  
-    push-stage.sh
+    push.sh <branch_name>
