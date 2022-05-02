@@ -5,6 +5,8 @@ do
 		targetBranch=$var
 		currentBranch=$(git symbolic-ref --short -q HEAD)
 		git add .
+		
+		git push origin $currentBranch
 
 		git checkout $targetBranch
 
@@ -25,4 +27,7 @@ do
 		echo "InputError: Target branch was not provided"
 	fi
 done
-read # Make pause to read script output
+echo "Process finished with success"
+echo "This window will automatically close in 5 seconds..."
+sleep 5s
+exit
