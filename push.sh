@@ -1,28 +1,61 @@
+pull () {
+	git pull origin $1
+	
+	if [ ! $? -eq 0 ]; then
+		echo "\nResolve conflicts and press Enter to continue..."
+		read
+	fi
+}
+
+merge () {
+	git merge $1
+	
+	if [ ! $? -eq 0 ]; then
+		echo "\nResolve conflicts and press Enter to continue..."
+		read
+	fi
+}
+
+currentBranch=$(git symbolic-ref --short -q HEAD)
+git add .
+
+pull $currentBranch
+
+pull master
+
+git push origin $currentBranch
+
 for var in "$@"
 do
 	if [ ! -z "$var" ] # check if branch name is present
 	then
 		targetBranch=$var
-		currentBranch=$(git symbolic-ref --short -q HEAD)
-		git add .
-		
-		git push origin $currentBranch
 
 		git checkout $targetBranch
 
-		git pull origin $targetBranch
+		pull $targetBranch
+		
+		pull master
+		
+		merge $currentBranch
 
-		git merge $currentBranch
-
+		git commit -m "Merge with $currentBranch"
+		
+		dotnet test
+		
 		if [ ! $? -eq 0 ]; then
-			echo "\nResolve conflicts and push..."
-		else
-			git commit -m "Merge with $currentBranch"
-
-			git push origin $targetBranch
-			
+			echo "\nTEST SUIT FAILED"
 			git checkout $currentBranch
+			read
+			exit
 		fi
+
+		git push origin $targetBranch
+		
+		git checkout $currentBranch
+		echo "\nPUSH FINISHED WITH SUCCESS. PRESS ENTER TO CONTINUE"
+		read
+	
 	else
 		echo "InputError: Target branch was not provided"
 	fi
